@@ -34,10 +34,10 @@ import com.skrumble.qrcode.Intents;
 import com.skrumble.qrcode.LocaleManager;
 import com.skrumble.qrcode.PreferencesActivity;
 import com.skrumble.qrcode.R;
-import com.google.zxing.client.android.book.SearchBookContentsActivity;
 import com.google.zxing.client.result.ParsedResult;
 import com.google.zxing.client.result.ParsedResultType;
 import com.google.zxing.client.result.ResultParser;
+import com.skrumble.qrcode.book.SearchBookContentsActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
