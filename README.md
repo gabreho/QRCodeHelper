@@ -15,7 +15,7 @@ allprojects {
 Step 2. Add the dependency
 ```java
 dependencies {
-	    implementation 'com.github.akashapps:QRCodeHelper:0.1.2'
+	    implementation 'com.github.akashapps:QRCodeHelper:0.1.3'
 	}
 ```	
 
