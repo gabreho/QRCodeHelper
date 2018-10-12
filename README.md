@@ -15,7 +15,7 @@ allprojects {
 Step 2. Add the dependency
 ```java
 dependencies {
-	    
+	    implementation 'com.github.akashapps:QRCodeHelper:0.1.2'
 	}
 ```	
 
@@ -35,6 +35,8 @@ Step 1. Add the JitPack repository to your build file
 Step 2. Add the dependency
 ```java
 <dependency>
-   
+	<groupId>com.github.akashapps</groupId>
+    	<artifactId>QRCodeHelper</artifactId>
+   	 <version>0.1.2</version>
 </dependency>
 ```
