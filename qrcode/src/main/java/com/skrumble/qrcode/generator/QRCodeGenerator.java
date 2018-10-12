@@ -10,9 +10,9 @@ import com.google.zxing.common.BitMatrix;
 
 public class QRCodeGenerator {
 
-    private final static int QRcodeWidth = 500 ;
+    private final static int QRcodeWidth = 500;
 
-    public static Bitmap generateQRCodeImage(String text){
+    public static Bitmap generateQRCodeImage(String text) {
         try {
             return TextToImageEncode(text);
 
@@ -47,7 +47,7 @@ public class QRCodeGenerator {
             for (int x = 0; x < bitMatrixWidth; x++) {
 
                 pixels[offset + x] = bitMatrix.get(x, y) ?
-                        Color.BLACK:Color.WHITE;
+                        Color.BLACK : Color.WHITE;
             }
         }
         Bitmap bitmap = Bitmap.createBitmap(bitMatrixWidth, bitMatrixHeight, Bitmap.Config.ARGB_4444);

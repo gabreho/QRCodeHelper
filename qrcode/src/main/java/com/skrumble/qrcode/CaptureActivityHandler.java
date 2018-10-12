@@ -34,7 +34,7 @@ import android.util.Log;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
-import com.google.zxing.client.android.camera.CameraManager;
+import com.skrumble.qrcode.camera.CameraManager;
 
 import java.util.Collection;
 import java.util.Map;

@@ -58,17 +58,17 @@ import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
 import com.google.zxing.ResultPoint;
-import com.google.zxing.client.android.camera.CameraManager;
-import com.google.zxing.client.android.clipboard.ClipboardInterface;
-import com.google.zxing.client.android.history.HistoryActivity;
-import com.google.zxing.client.android.history.HistoryItem;
-import com.google.zxing.client.android.history.HistoryManager;
-import com.google.zxing.client.android.result.ResultButtonListener;
-import com.google.zxing.client.android.result.ResultHandler;
-import com.google.zxing.client.android.result.ResultHandlerFactory;
-import com.google.zxing.client.android.result.supplement.SupplementalInfoRetriever;
-import com.google.zxing.client.android.share.ShareActivity;
+import com.skrumble.qrcode.camera.CameraManager;
+import com.skrumble.qrcode.clipboard.ClipboardInterface;
+import com.skrumble.qrcode.history.HistoryActivity;
+import com.skrumble.qrcode.history.HistoryItem;
+import com.skrumble.qrcode.history.HistoryManager;
+import com.skrumble.qrcode.result.ResultButtonListener;
+import com.skrumble.qrcode.result.ResultHandler;
 import com.google.zxing.common.HybridBinarizer;
+import com.skrumble.qrcode.result.ResultHandlerFactory;
+import com.skrumble.qrcode.result.supplement.SupplementalInfoRetriever;
+import com.skrumble.qrcode.share.ShareActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -150,6 +150,63 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         }
     }
 
+    public static String decodeQRImage(String path) {
+
+        Bitmap bitmap = BitmapFactory.decodeFile(path);
+        String decoded = "";
+        int width = bitmap.getWidth(), height = bitmap.getHeight();
+
+// RGBLuminanceSource
+
+        int[] pixelsArray = new int[width * height];
+        bitmap.getPixels(pixelsArray, 0, width, 0, 0, width, height);
+        bitmap.recycle();
+        bitmap = null;
+
+        RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixelsArray);
+        BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+// PlanarYUVLuminanceSource
+
+        // doesn't seam to work
+
+//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//        byte[] bytes = stream.toByteArray();
+//        bitmap.recycle();
+//        PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(bytes, width, height, 0, 0, width, height, false);
+//        BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+// READER HINTS
+
+        Map<DecodeHintType, Object> hints = new HashMap<>();
+        hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+
+        // doesn't work at all, event for screen shot
+//        hints.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
+
+        ArrayList<BarcodeFormat> formats = new ArrayList<BarcodeFormat>();
+//        formats.add(BarcodeFormat.QR_CODE);
+//        formats.add(BarcodeFormat.DATA_MATRIX);
+//        hints.put(DecodeHintType.POSSIBLE_FORMATS, formats);
+
+        MultiFormatReader reader = new MultiFormatReader();
+//        QRCodeReader reader = new QRCodeMultiReader();
+
+        try {
+            Result result = reader.decode(binaryBitmap, hints);
+            decoded = result.getText();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (decoded == null) {
+            decoded = "";
+        }
+
+        return decoded;
+    }
+
     ViewfinderView getViewfinderView() {
         return viewfinderView;
     }
@@ -182,7 +239,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         mFlashIconImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (cameraManager != null){
+                if (cameraManager != null) {
                     cameraManager.toggleTorch();
                 }
             }
@@ -446,15 +503,15 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             }
         }
 
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GET_LOCAL_FILE){
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GET_LOCAL_FILE) {
             Uri uri = intent.getData();
             String data;
 
             File file = new File(getRealPathFromURI(uri));
 
-            if (file.exists()){
+            if (file.exists()) {
                 data = decodeQRImage(file.getPath());
-            }else {
+            } else {
                 data = "";
             }
 
@@ -824,63 +881,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     public void drawViewfinder() {
         viewfinderView.drawViewfinder();
-    }
-
-    public static String decodeQRImage(String path) {
-
-        Bitmap bitmap = BitmapFactory.decodeFile(path);
-        String decoded = "";
-        int width = bitmap.getWidth(), height = bitmap.getHeight();
-
-// RGBLuminanceSource
-
-        int[] pixelsArray = new int[width * height];
-        bitmap.getPixels(pixelsArray, 0, width, 0, 0, width, height);
-        bitmap.recycle();
-        bitmap = null;
-
-        RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixelsArray);
-        BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
-
-// PlanarYUVLuminanceSource
-
-        // doesn't seam to work
-
-//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//        byte[] bytes = stream.toByteArray();
-//        bitmap.recycle();
-//        PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(bytes, width, height, 0, 0, width, height, false);
-//        BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
-
-// READER HINTS
-
-        Map<DecodeHintType, Object> hints = new HashMap<>();
-        hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
-
-        // doesn't work at all, event for screen shot
-//        hints.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
-
-        ArrayList<BarcodeFormat> formats = new ArrayList<BarcodeFormat>();
-//        formats.add(BarcodeFormat.QR_CODE);
-//        formats.add(BarcodeFormat.DATA_MATRIX);
-//        hints.put(DecodeHintType.POSSIBLE_FORMATS, formats);
-
-        MultiFormatReader reader = new MultiFormatReader();
-//        QRCodeReader reader = new QRCodeMultiReader();
-
-        try {
-            Result result = reader.decode(binaryBitmap, hints);
-            decoded = result.getText();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (decoded == null) {
-            decoded = "";
-        }
-
-        return decoded;
     }
 
     private String getRealPathFromURI(Uri contentURI) {
