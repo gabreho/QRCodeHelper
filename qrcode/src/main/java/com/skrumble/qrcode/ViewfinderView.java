@@ -48,7 +48,7 @@ public final class ViewfinderView extends View {
     private static final int CURRENT_POINT_OPACITY = 0xA0;
     private static final int MAX_RESULT_POINTS = 20;
     private static final int POINT_SIZE = 6;
-    private final int mDefaultBorderColor = Color.parseColor("#d53c27");
+    private final int mDefaultBorderColor = Color.parseColor("#009ad6");
     private final Paint paint;
     private final int maskColor;
     private final int resultColor;
